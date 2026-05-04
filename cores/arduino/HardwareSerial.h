@@ -313,6 +313,20 @@ public:
     }
   }
 
+  // Returns the number of bytes free in the TX (transmit) buffer.
+  int availableForWrite() {
+    if constexpr (TXB_SIZE > 0) {
+      // Keep one slot open to distinguish empty vs full in the ring buffer.
+      UART_IntConfig(UARTx, UART_INTCFG_THRE, DISABLE);
+      const uint32_t used = (TxQueueWritePos + TXB_SIZE - TxQueueReadPos) % TXB_SIZE;
+      UART_IntConfig(UARTx, UART_INTCFG_THRE, ENABLE);
+      const int free = TXB_SIZE - 1 - used;
+      return free;
+    }
+    return 1;
+  }
+
+  // Returns the number of bytes available to read from the RX (receive) buffer.
   size_t available() {
     return (RxQueueWritePos + RXB_SIZE - RxQueueReadPos) % RXB_SIZE;
   }
