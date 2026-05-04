@@ -323,7 +323,7 @@ public:
       const int free = TXB_SIZE - 1 - used;
       return free;
     }
-    return 0;
+    return 1;
   }
 
   // Returns the number of bytes available to read from the RX (receive) buffer.
